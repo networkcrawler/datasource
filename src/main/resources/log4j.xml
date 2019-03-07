@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration PUBLIC "-//log4j/log4j Configuration//EN" "log4j.dtd">
+
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+	<appender name="STDOUT" class="org.apache.log4j.ConsoleAppender">
+		<param name="encoding" value="UTF-8"/>
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d %t %-5p %c.%M:%L - %m%n" />
+		</layout>
+	</appender>
+	<!--
+	<appender name="FILE" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="file" value="${loggingRoot}/${server.name}/logs/${server.name}.log" />
+		<param name="encoding" value="UTF-8"/>
+		<!-- Keep one backup file 
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d %t %-5p %c.%M:%L - %m%n" />
+		</layout>
+	</appender>-->
+	<!-- specify the logging level for loggers from other libraries -->
+	<logger name="com.data.java.crawler">
+		<level value="INFO" />
+	</logger>
+</log4j:configuration> 
