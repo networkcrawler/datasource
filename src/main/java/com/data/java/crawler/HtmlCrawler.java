@@ -19,22 +19,22 @@ import com.data.java.crawler.task.CrawlerTask;
 import com.data.java.crawler.utils.PropertyUtil;
 
 /**
- * Ê¹ÓÃjsoup api ÖÆ×÷Ò»¸ö×¨ÃÅ»ñÈ¡ĞÂÎÅÍøÕ¾µÄhtmlÎÄ¼şµÄÍøÂçÅÀ³æ£¬²¢½«»ñÈ¡µÄÎÄ¼ş±£´æµ½±¾µØÎÄ¼ş
+ * Ê¹ï¿½ï¿½jsoup api ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½×¨ï¿½Å»ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ¾ï¿½ï¿½htmlï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½æ£¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½æµ½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½
  * @author admin
  *
  */
 public class HtmlCrawler {
 	private static Logger LOGGER = LoggerFactory.getLogger(HtmlCrawler.class);
 	private static Lock lock = new ReentrantLock();
-    //ÌáÈ¡µÄÊı¾İ´æ·Åµ½¸ÃÄ¿Â¼ÏÂ
+    //ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½İ´ï¿½Åµï¿½ï¿½ï¿½Ä¿Â¼ï¿½ï¿½
     private static String savepath;
-    //ÅÀÈ¡µÃÉî¶È
+    //ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½
     private static Integer maxdepth;
-    //´´½¨8¸öÏß³ÌµÄÏß³Ì³Ø
+    //ï¿½ï¿½ï¿½ï¿½8ï¿½ï¿½ï¿½ß³Ìµï¿½ï¿½ß³Ì³ï¿½
     private static ExecutorService executorService;
-    //Ïß³ÌÊıÁ¿
+    //ï¿½ß³ï¿½ï¿½ï¿½ï¿½ï¿½
     private static Integer threadNum;
- 	//×¥È¡µÄÍøÒ³Á´½ÓÃ¿¸öÁ¬½ÓÖ®¼äÒÔ£»¸ôÀë£¬·½±ã·Ö¸î
+ 	//×¥È¡ï¿½ï¿½ï¿½ï¿½Ò³ï¿½ï¿½ï¿½ï¿½Ã¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö®ï¿½ï¿½ï¿½Ô£ï¿½ï¿½ï¿½ï¿½ë£¬ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½
  	private static String urls;
  	
  	static {
@@ -44,49 +44,51 @@ public class HtmlCrawler {
  		executorService = Executors.newFixedThreadPool(threadNum);
  		urls = PropertyUtil.getProperty("urls");
  	}
+
+	//ï¿½È´ï¿½ï¿½ï¿½È¡ï¿½ï¿½url
+	volatile static List<String> allwaiturl = new ArrayList<String>();
+	//ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½url
+	volatile static Set<String> alloverurl = new HashSet<String>();
+	//ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½urlï¿½ï¿½ï¿½ï¿½È½ï¿½ï¿½ï¿½ï¿½ï¿½È¡ï¿½Ğ¶ï¿½
+	volatile static Map<String,Integer> allurldepth = new HashMap<String,Integer>();
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ß³Ì¼ï¿½ï¿½ï¿½ï¿½ï¿½
+	volatile static Integer count = threadNum;
+	// ï¿½ï¿½ï¿½ï¿½referenceï¿½á¹¹
+	volatile static Map<String, String> referrers = new HashMap<String, String>();
 	
 	public static void main(String[] args) {
 		
 		//new CrawlerExecutor(lock, savepath, maxdepth, executorService, threadNum, urls).execute();
 		
-	    //µÈ´ıÅÀÈ¡µÄurl
-	    List<String> allwaiturl = new ArrayList<>();
-	    //ÅÀÈ¡¹ıµÄurl
-	    Set<String> alloverurl = new HashSet<>();
-	    //¼ÇÂ¼ËùÓĞurlµÄÉî¶È½øĞĞÅÀÈ¡ÅĞ¶Ï
-	    Map<String,Integer> allurldepth = new HashMap<>();
-	    //¿ÕÏĞÏß³Ì¼ÆÊıÆ÷
-	    Integer count = threadNum;
-	    // ¶¨Òåreference½á¹¹
-	 	Map<String, String> referrers = new HashMap<String, String>();
+
 		
-		//ÅÀÈ¡µÄÍøÖ·Îªhttps://www.sina.com.cn
+		//ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½Ö·Îªhttps://www.sina.com.cn
 		//String strurl="https://www.sina.com.cn/";
-		//»ñÈ¡ÍøÖ·
+		//ï¿½ï¿½È¡ï¿½ï¿½Ö·
 		if(urls==null) {
-			LOGGER.error("Î´ÊäÈëÓĞĞ§µÄÍøÖ·£¡");
+			LOGGER.error("Î´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ğ§ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½");
 			return;
 		}
 		
-		//·Ö¸îµ¥¸öÍøÖ·
+		//ï¿½Ö¸îµ¥ï¿½ï¿½ï¿½ï¿½Ö·
 		String[] urlArray = urls.split(";");
 		
-		//½«ÊäÈëµÄÍøÖ··ÅÈë´ı×¥È¡ÁĞ±í£¬²¢¸üĞÂÉî¶ÈÁ´½ÓÉî¶È
+		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½×¥È¡ï¿½Ğ±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		for(int i=0;i<urlArray.length;i++) {
 			allwaiturl.add(urlArray[i]);
 			allurldepth.put(urlArray[i],1);
 		}
 		
-		//ËÀÑ­»··ÖÅäÈÎÎñ¸ø¿ÕÏĞÏß³Ì£¬×¥È¡htmlÍøÒ³ÎÄ¼ş
+		//ï¿½ï¿½Ñ­ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß³Ì£ï¿½×¥È¡htmlï¿½ï¿½Ò³ï¿½Ä¼ï¿½
 		while(true) {
 			if(count>0) {
 				if(allwaiturl.size()>0) {
-					//´Ó´ı×¥È¡ÁĞ±íÖĞ»ñÈ¡Á´½Ó£¬²¢É¾³ı
+					//ï¿½Ó´ï¿½×¥È¡ï¿½Ğ±ï¿½ï¿½Ğ»ï¿½È¡ï¿½ï¿½ï¿½Ó£ï¿½ï¿½ï¿½É¾ï¿½ï¿½
 					String url = allwaiturl.get(0);
 					allwaiturl.remove(0);
 					
 					if(url!=null&&!alloverurl.contains(url)&&allurldepth.get(url)<=maxdepth) {
-						count--;//Ïß³ÌÊı¼õ1
+						count--;//ï¿½ß³ï¿½ï¿½ï¿½ï¿½ï¿½1
 						executorService.execute(new CrawlerTask(url, savepath, allwaiturl, alloverurl,
 								allurldepth, count, referrers,lock));
 								
@@ -94,9 +96,9 @@ public class HtmlCrawler {
 				}
 			}
 
-			//Ñ­»·ÍË³öÌõ¼ş
+			//Ñ­ï¿½ï¿½ï¿½Ë³ï¿½ï¿½ï¿½ï¿½ï¿½
 			if(count==threadNum&&allwaiturl.size()==0) {
-				System.out.println("ÍøÒ³ÅÀÈ¡Íê³É£¬ÒÑÅÀÈ¡ÊıÁ¿£º"+alloverurl.size()+"\t\n");
+				System.out.println("ï¿½ï¿½Ò³ï¿½ï¿½È¡ï¿½ï¿½É£ï¿½ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"+alloverurl.size()+"\t\n");
 				return;
 			}
 		}
