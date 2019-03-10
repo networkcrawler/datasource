@@ -34,7 +34,7 @@ public class PropertyUtil {
                     in.close();
                 }
             } catch (IOException e) {
-                System.out.println("jdbc.properties文件流关闭出现异常");
+                System.out.println("env.properties文件流关闭出现异常");
             }
         }
         System.out.println("加载properties文件内容完成...........");

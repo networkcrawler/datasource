@@ -8,7 +8,7 @@
   	<dependency>
 	    <groupId>org.jsoup</groupId>
 	    <artifactId>jsoup</artifactId>
-	    <version>1.5.1</version>
+	    <version>1.10.3</version>
   	</dependency>
   	<!-- 日志 开始 -->
 	<dependency>
@@ -22,5 +22,12 @@
 		<version>1.7.2</version>
 	</dependency>
 	<!-- 日志 结束 -->
+	  <!-- 邮件 -->
+	  <dependency>
+		  <groupId>javax.mail</groupId>
+		  <artifactId>mail</artifactId>
+		  <version>1.4.7</version>
+	  </dependency>
+	  <!-- 邮件 结束 -->
   </dependencies>
 </project>
