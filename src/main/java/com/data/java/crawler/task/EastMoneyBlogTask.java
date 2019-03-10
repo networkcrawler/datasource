@@ -81,9 +81,4 @@ public class EastMoneyBlogTask {
         String subject = "热门博主文章20条";
         SendMailUtils.send(subject,content);
     }
-
-    public static void main(String [] args){
-        EastMoneyBlogTask eastMoneyBlogTask = new EastMoneyBlogTask();
-        eastMoneyBlogTask.done();
-    }
 }
