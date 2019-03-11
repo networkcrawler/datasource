@@ -25,30 +25,31 @@ import static org.quartz.JobBuilder.newJob;
 import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 
 /**
- * 启动类,程序的入口
+ * 鍚姩绫�,绋嬪簭鐨勫叆鍙�
  * @author admin
  *
  */
 public class Main {
 	public static void main(String[] args) {
 		try {
-			//创建scheduler
+			//鍒涘缓scheduler
 			Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
-			//定义一个Trigger
+			//瀹氫箟涓�涓猅rigger
 			Trigger trigger = TriggerBuilder.newTrigger().withIdentity("trigger1","group1")
 					.startNow()
-					.withSchedule(cronSchedule("0 40 23 ? * *"))//每天23:40执行
+					.withSchedule(cronSchedule("0 40 23 ? * *"))//姣忓ぉ23:40鎵ц
 					.build();
-			//定义一个jobdetail
+			//瀹氫箟涓�涓猨obdetail
 			JobDetail job = newJob(EastMoneyBlogQuartz.class)
 					.withIdentity("job1","group1"
 					)
 					.usingJobData("name","quartz")
 					.build();
-			//加入这个调度
+			
+			//鍔犲叆杩欎釜璋冨害
 			scheduler.scheduleJob(job,trigger);
 
-			//启动调度器
+			//鍚姩璋冨害鍣�
 			scheduler.start();
 
 		} catch (Exception e) {
@@ -59,7 +60,7 @@ public class Main {
 }
 
 /**
- * 查询热门博主博文工具job
+ * 鏌ヨ鐑棬鍗氫富鍗氭枃宸ュ叿job
  */
 class EastMoneyBlogQuartz implements Job{
 	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
