@@ -1,4 +1,4 @@
-package com.data.java.crawler.mongoDao;
+package com.data.java.crawler.dao;
 
 import java.util.List;
 
@@ -6,6 +6,6 @@ import com.data.java.crawler.dto.EastMoneyFundRealPerDTO;
 
 public interface EastMoneyFundRealDao {
 	void insert(List<EastMoneyFundRealPerDTO> lists);
-	EastMoneyFundRealPerDTO findOneBySymbol(String symbol);
+	List<EastMoneyFundRealPerDTO> findOneBySymbol(String symbol);
 	void update(List<EastMoneyFundRealPerDTO> lists);
 }

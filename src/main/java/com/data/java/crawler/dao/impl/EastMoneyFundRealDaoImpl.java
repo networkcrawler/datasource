@@ -1,18 +1,20 @@
-package com.data.java.crawler.mongoDao.impl;
+package com.data.java.crawler.dao.impl;
 
 import java.util.LinkedList;
 import java.util.List;
 
 import org.bson.Document;
 
+import com.data.java.crawler.dao.EastMoneyFundRealDao;
 import com.data.java.crawler.dto.EastMoneyFundRealPerDTO;
-import com.data.java.crawler.mongoDao.EastMoneyFundRealDao;
+import com.data.java.crawler.utils.DateFormatUtils;
 import com.data.java.crawler.utils.MongoConnectUtils;
 import com.mongodb.BasicDBObject;
 import com.mongodb.Block;
 import com.mongodb.DB;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.UpdateManyModel;
@@ -21,7 +23,7 @@ public class EastMoneyFundRealDaoImpl implements EastMoneyFundRealDao {
 
 	public void insert(List<EastMoneyFundRealPerDTO> lists) {
 		//获取数据库
-		MongoDatabase mongoDatabase = MongoConnectUtils.connectDB("eastmoneycenter");
+		MongoDatabase mongoDatabase = MongoConnectUtils.connect("eastmoneycenter");
 		//获取集合
 		MongoCollection collection = mongoDatabase.getCollection("rund_real_per");
 		//创建文档
@@ -43,7 +45,9 @@ public class EastMoneyFundRealDaoImpl implements EastMoneyFundRealDao {
 			document.put("midInflowMainPer", tmp.getMidInflowMainPer());
 			document.put("smallInflowMain", tmp.getSmallInflowMain());
 			document.put("smallInflowMainPer", tmp.getSmallInflowMainPer());
-			
+			document.put("created", DateFormatUtils.getDay(null));
+			document.put("updated", DateFormatUtils.getDay(null));
+
 			documents.add(document);
 		}
 		
@@ -52,22 +56,27 @@ public class EastMoneyFundRealDaoImpl implements EastMoneyFundRealDao {
 		
 	}
 
-	public EastMoneyFundRealPerDTO findOneBySymbol(String symbol) {
+	public List<EastMoneyFundRealPerDTO> findOneBySymbol(String symbol) {
 		// 获取数据库
-		MongoDatabase database = MongoConnectUtils.connectDB("eastmoneycenter");
+		MongoDatabase database = MongoConnectUtils.connect("eastmoneycenter");
 		
 		//获取集合
 		MongoCollection collection = database.getCollection("rund_real_per");
 		
 		//查询数据
-		FindIterable<EastMoneyFundRealPerDTO> fil = collection.find(Filters.eq("symbol", symbol),EastMoneyFundRealPerDTO.class);
-		System.out.println(fil);
-		return fil.first();
+		FindIterable<EastMoneyFundRealPerDTO> fil = collection.find(Filters.and(Filters.eq("symbol", symbol),Filters.eq("created", DateFormatUtils.getDay(null))),EastMoneyFundRealPerDTO.class);
+		List<EastMoneyFundRealPerDTO> tmp = new LinkedList<EastMoneyFundRealPerDTO>();
+		MongoCursor<EastMoneyFundRealPerDTO> it = fil.iterator();
+		while(it.hasNext()) {
+			tmp.add(it.next());
+		}
+		
+		return tmp;
 	}
 
 	public void update(List<EastMoneyFundRealPerDTO> lists) {
 		// 获取连接
-		MongoDatabase database = MongoConnectUtils.connectDB("eastmoneycenter");
+		MongoDatabase database = MongoConnectUtils.connect("eastmoneycenter");
 		//获取集合
 		MongoCollection collection = database.getCollection("rund_real_per");
 		//组装数据

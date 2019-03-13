@@ -8,10 +8,10 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import com.alibaba.fastjson.JSONObject;
+import com.data.java.crawler.dao.EastMoneyFundRealDao;
+import com.data.java.crawler.dao.impl.EastMoneyFundRealDaoImpl;
 import com.data.java.crawler.dto.EastMoneyFundRealDTO;
 import com.data.java.crawler.dto.EastMoneyFundRealPerDTO;
-import com.data.java.crawler.mongoDao.EastMoneyFundRealDao;
-import com.data.java.crawler.mongoDao.impl.EastMoneyFundRealDaoImpl;
 import com.data.java.crawler.utils.JsoupUtils;
 
 /**
@@ -20,7 +20,7 @@ import com.data.java.crawler.utils.JsoupUtils;
  *
  */
 public class EastMoneyFundRealTask {
-	private String url = "http://nufm.dfcfw.com/EM_Finance2014NumericApplication/JS.aspx?type=ct&st=(BalFlowMain)&sr=-1&p=1&ps=100&js=var%20ectQJNnj={pages:(pc),date:%222014-10-22%22,data:[(x)]}&token=894050c76af8597a853f5b408b759f5d&cmd=C._AB&sty=DCFFITA&rt=51742742";
+	private String url = "http://nufm.dfcfw.com/EM_Finance2014NumericApplication/JS.aspx?type=ct&st=(BalFlowMain)&sr=-1&p=1&ps=50&js=var%20ectQJNnj={pages:(pc),date:%222014-10-22%22,data:[(x)]}&token=894050c76af8597a853f5b408b759f5d&cmd=C._AB&sty=DCFFITA&rt=51742742";
 	
 	private EastMoneyFundRealDao eastMoneyFundRealDao = new EastMoneyFundRealDaoImpl();
 	
@@ -58,11 +58,11 @@ public class EastMoneyFundRealTask {
 				eastPer.setMidInflowMainPer(Double.parseDouble(menbers[12]));
 				eastPer.setSmallInflowMain(Double.parseDouble(menbers[13]));
 				eastPer.setSmallInflowMainPer(Double.parseDouble(menbers[14]));
-				EastMoneyFundRealPerDTO one = eastMoneyFundRealDao.findOneBySymbol(menbers[1]);
-				if(one==null) {
+				List<EastMoneyFundRealPerDTO> ones = eastMoneyFundRealDao.findOneBySymbol(menbers[1]);
+				if(ones.size()==0) {
 					eastPersIn.add(eastPer);
 				}else {
-					eastPersUp.add(one);
+					eastPersUp.add(eastPer);
 				}
 			}
 			
@@ -80,7 +80,7 @@ public class EastMoneyFundRealTask {
 //		EastMoneyFundRealTask e = new EastMoneyFundRealTask();
 //		e.done();
 		EastMoneyFundRealDao eastMoneyFundRealDao = new EastMoneyFundRealDaoImpl();
-		EastMoneyFundRealPerDTO t =eastMoneyFundRealDao.findOneBySymbol("002736");
-		System.out.println(t.getName());
+		List<EastMoneyFundRealPerDTO> t =eastMoneyFundRealDao.findOneBySymbol("002736");
+		System.out.println(t);
 	}
 }
