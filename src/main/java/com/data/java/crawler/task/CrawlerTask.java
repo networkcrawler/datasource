@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;
 
 /**
- * 该类是
+ * 该类是   抓取所给网页所有连接的线程  
  * 
  * @author admin
  *

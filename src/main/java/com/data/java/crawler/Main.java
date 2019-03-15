@@ -1,6 +1,8 @@
 package com.data.java.crawler;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -17,6 +19,8 @@ import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.data.java.crawler.dao.CapitalFlowsTodayDao;
+import com.data.java.crawler.task.CapitalFlowsTodayTask;
 import com.data.java.crawler.task.CrawlerTask;
 import com.data.java.crawler.utils.PropertyUtil;
 
@@ -25,46 +29,56 @@ import static org.quartz.JobBuilder.newJob;
 import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 
 /**
- * 鍚姩绫�,绋嬪簭鐨勫叆鍙�
+ * 	爬虫启动入口
  * @author admin
  *
  */
 public class Main {
-	public static void main(String[] args) {
-		try {
-			//鍒涘缓scheduler
-			Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
-			//瀹氫箟涓�涓猅rigger
-			Trigger trigger = TriggerBuilder.newTrigger().withIdentity("trigger1","group1")
-					.startNow()
-					.withSchedule(cronSchedule("0 40 23 ? * *"))//姣忓ぉ23:40鎵ц
-					.build();
-			//瀹氫箟涓�涓猨obdetail
-			JobDetail job = newJob(EastMoneyBlogQuartz.class)
-					.withIdentity("job1","group1"
-					)
-					.usingJobData("name","quartz")
-					.build();
-			
-			//鍔犲叆杩欎釜璋冨害
-			scheduler.scheduleJob(job,trigger);
-
-			//鍚姩璋冨害鍣�
-			scheduler.start();
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	public static void main(String[] args) throws SchedulerException {
+		Main mainScheduler = new Main();
+        mainScheduler.schedulerJob();
 	}
+	
+	//创建调度器
+    public static Scheduler getScheduler() throws SchedulerException{
+        SchedulerFactory schedulerFactory = new StdSchedulerFactory();
+        return schedulerFactory.getScheduler();
+    }
+    
+    public static void schedulerJob() throws SchedulerException{
+        //创建任务
+        JobDetail jobDetail = JobBuilder.newJob(MyJob.class).withIdentity("job1", "group1").build();
+        //创建触发器 每3秒钟执行一次
+        Trigger trigger = TriggerBuilder.newTrigger().withIdentity("trigger1", "group3")
+                            .withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInSeconds(3).repeatForever())
+                            .build();
+        Scheduler scheduler = getScheduler();
+        //将任务及其触发器放入调度器
+        scheduler.scheduleJob(jobDetail, trigger);
+        //调度器开始调度任务
+        scheduler.start();
+        
+    }
 
 }
 
 /**
- * 鏌ヨ鐑棬鍗氫富鍗氭枃宸ュ叿job
+ *	任务定义
  */
 class EastMoneyBlogQuartz implements Job{
 	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-		EastMoneyBlogTask eastMoneyBlogTask = new EastMoneyBlogTask();
-		eastMoneyBlogTask.done();
+		System.out.println(jobExecutionContext.getJobDetail());
+		CapitalFlowsTodayTask c = new CapitalFlowsTodayTask();
+		System.out.println("执行一次");
+		c.done();
 	}
+}
+
+class MyJob implements Job{
+
+    public void execute(JobExecutionContext context)
+            throws JobExecutionException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        System.out.println(sdf.format(new Date()));
+    }
 }
