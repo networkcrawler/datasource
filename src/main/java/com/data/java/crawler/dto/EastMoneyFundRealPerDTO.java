@@ -1,7 +1,13 @@
 package com.data.java.crawler.dto;
 
+import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection = "fund_real")
 public class EastMoneyFundRealPerDTO {
-	private Integer id;
+	@Id
+	private ObjectId id;
 	private String symbol;//代码
 	private String name;//名称
 	private Double lastTrade;//当天价格
@@ -16,13 +22,15 @@ public class EastMoneyFundRealPerDTO {
 	private Double midInflowMainPer;//今日中单净流入占比，%
 	private Double smallInflowMain;//今日小单净流入额，单位为万
 	private Double smallInflowMainPer;//今日小单净流入占比，%
-	
-	public Integer getId() {
+
+	public ObjectId getId() {
 		return id;
 	}
-	public void setId(Integer id) {
+
+	public void setId(ObjectId id) {
 		this.id = id;
 	}
+
 	public String getSymbol() {
 		return symbol;
 	}

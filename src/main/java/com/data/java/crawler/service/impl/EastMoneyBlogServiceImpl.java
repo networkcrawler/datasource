@@ -1,30 +1,23 @@
-package com.data.java.crawler.task;
+package com.data.java.crawler.service.impl;
 
 import com.data.java.crawler.dto.EastMoneyBlogDTO;
-import com.data.java.crawler.utils.PropertyUtil;
+import com.data.java.crawler.service.EastMoneyBlogService;
 import com.data.java.crawler.utils.SendMailUtils;
-import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.omg.Messaging.SYNC_WITH_TRANSPORT;
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
+import org.springframework.stereotype.Service;
 
-import javax.mail.Message;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.print.Doc;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Properties;
 
 /**
  * 1.每天上午9点,下午13点定时获取东方财富的热门博主文章
  * 2.并将消息发送到邮箱上
  */
-public class EastMoneyBlogTask {
+@Service
+public class EastMoneyBlogServiceImpl implements EastMoneyBlogService {
     private String url = "http://blog.eastmoney.com/hot_1.html";//连接地址
 
     public void done(){

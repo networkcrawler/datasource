@@ -6,4 +6,5 @@ import com.data.java.crawler.dto.CapitalFlowsTodayDTO;
 
 public interface CapitalFlowsTodayDao {
 	void insertMany(List<CapitalFlowsTodayDTO> list);
+	List<CapitalFlowsTodayDTO> find();
 }

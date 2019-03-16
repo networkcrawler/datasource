@@ -14,34 +14,23 @@ import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoIterable;
 import com.mongodb.client.model.Filters;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.stereotype.Component;
 
+@Component
 public class IndividualReportDaoImpl implements IndividualReportDao {
+	@Autowired
+	private MongoTemplate mongoTemplate;
 
 	public void insertMany(List<EastMoneyIndividualReportDTO> list) {
-		//获取集合
-		MongoCollection collection = getMongoCollection();
-		//创建文档
-		List<Document> documents = new LinkedList<Document>();
-		for(EastMoneyIndividualReportDTO tmp:list) {
-			Document document = new Document();
-			document.put("companyCode", tmp.getCompanyCode());
-			document.put("sratingName", tmp.getSratingName());
-			document.put("insCode", tmp.getInsCode());
-			document.put("insName", tmp.getInsName());
-			document.put("author", tmp.getAuthor());
-			document.put("change", tmp.getChange());
-			document.put("infoCode", tmp.getInfoCode());
-			document.put("title", tmp.getTitle());
-			document.put("type", tmp.getType());
-			document.put("secuName", tmp.getSecuName());
-			document.put("rate", tmp.getRate());
-			document.put("secuFullCode", tmp.getSecuFullCode());
-			
-			documents.add(document);
+		try {
+			mongoTemplate.insertAll(list);
+		}catch (Exception e) {
+			e.printStackTrace();
 		}
-		//cc插入数据库
-		collection.insertMany(documents);
-		
 	}
 
 	public void updateMany(List<EastMoneyIndividualReportDTO> list) {
@@ -50,15 +39,12 @@ public class IndividualReportDaoImpl implements IndividualReportDao {
 	}
 
 	public EastMoneyIndividualReportDTO findByTitle(String title) {
-		//获取集合
-		MongoCollection collection = getMongoCollection();
-		FindIterable<EastMoneyIndividualReportDTO> find = collection.find(Filters.eq("title", title));		
-		return find.first();
+		try{
+			Query query = new Query(Criteria.where("title").is(title));
+			return mongoTemplate.findOne(query,EastMoneyIndividualReportDTO.class);
+		}catch (Exception e){
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
 	}
-	
-	private MongoCollection getMongoCollection(){
-		MongoDatabase database = MongoConnectUtils.connect("eastmoneycenter");
-		return database.getCollection("individual_report");
-	}
-
 }

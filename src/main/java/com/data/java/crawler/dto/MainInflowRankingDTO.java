@@ -1,5 +1,8 @@
 package com.data.java.crawler.dto;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import javax.print.DocFlavor;
 import java.nio.DoubleBuffer;
 import java.util.Date;
@@ -7,7 +10,10 @@ import java.util.Date;
 /**
  * 主力净流入排名 实体
  */
+@Document(collection = "main_inflow_ranking")
 public class MainInflowRankingDTO {
+    @Id
+    private String id;
     private String symbol;//编码
     private String name;//名称
     private String lasttrade;//最新价
@@ -22,8 +28,16 @@ public class MainInflowRankingDTO {
     private String tenChg;//10日涨跌
     private String plateName;//板块名称
     private String plateSymbol;//板块编码
-    private Date created;//创建时间
-    private Date updated;//更新时间
+    private String created;//创建时间
+    private String updated;//更新时间
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getSymbol() {
         return symbol;
@@ -137,19 +151,19 @@ public class MainInflowRankingDTO {
         this.plateSymbol = plateSymbol;
     }
 
-    public Date getCreated() {
+    public String getCreated() {
         return created;
     }
 
-    public void setCreated(Date created) {
+    public void setCreated(String created) {
         this.created = created;
     }
 
-    public Date getUpdated() {
+    public String getUpdated() {
         return updated;
     }
 
-    public void setUpdated(Date updated) {
+    public void setUpdated(String updated) {
         this.updated = updated;
     }
 }

@@ -12,7 +12,7 @@
 	<appender name="FILE" class="org.apache.log4j.DailyRollingFileAppender">
 		<param name="file" value="${loggingRoot}/${server.name}/logs/${server.name}.log" />
 		<param name="encoding" value="UTF-8"/>
-		<!-- Keep one backup file 
+		<!-- Keep one backup file
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%d %t %-5p %c.%M:%L - %m%n" />
 		</layout>
@@ -21,4 +21,4 @@
 	<logger name="com.data.java.crawler">
 		<level value="INFO" />
 	</logger>
-</log4j:configuration> 
+</log4j:configuration>

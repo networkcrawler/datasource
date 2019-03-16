@@ -1,4 +1,4 @@
-package com.data.java.crawler.task;
+package com.data.java.crawler.service.impl;
 
 
 import com.alibaba.fastjson.JSONArray;
@@ -6,15 +6,16 @@ import com.alibaba.fastjson.JSONObject;
 import com.data.java.crawler.dao.MainInflowRankingDao;
 import com.data.java.crawler.dao.impl.MainInflowRankingDaoImpl;
 import com.data.java.crawler.dto.MainInflowRankingDTO;
-import org.jsoup.Connection;
+import com.data.java.crawler.service.MainInflowRankingService;
+import com.data.java.crawler.utils.DateFormatUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
 import java.io.InputStreamReader;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -24,10 +25,12 @@ import java.util.regex.Pattern;
 /**
  * 主力净流入排名 数据爬取
  */
-public class MainInflowRankingTask {
+@Service
+public class MainInflowRankingServiceImpl implements MainInflowRankingService {
 
     private String url = "http://data.eastmoney.com/zjlx/list.html";
-    private MainInflowRankingDao mainInflowRankingDao = new MainInflowRankingDaoImpl();
+    @Autowired
+    private MainInflowRankingDao mainInflowRankingDao;
 
     public void done(){
         Document document = null;
@@ -78,7 +81,6 @@ public class MainInflowRankingTask {
                 for (int i=0;i<dataArray.size();i++){
                     String one = (String) dataArray.get(i);
                     String[] ones = one.split(",");
-                    System.out.println(one);
                     MainInflowRankingDTO mainInflowRankingDTO = new MainInflowRankingDTO();
                     mainInflowRankingDTO.setSymbol(ones[1]);
                     mainInflowRankingDTO.setName(ones[2]);
@@ -94,7 +96,8 @@ public class MainInflowRankingTask {
                     mainInflowRankingDTO.setTenChg(ones[12]);
                     mainInflowRankingDTO.setPlateName(ones[13]);
                     mainInflowRankingDTO.setPlateSymbol(ones[14]);
-                    
+                    mainInflowRankingDTO.setCreated(DateFormatUtils.getDay(null));
+                    mainInflowRankingDTO.setUpdated(DateFormatUtils.getDay(null));
                     List<MainInflowRankingDTO> list = mainInflowRankingDao.findBySymbolAndCreate(ones[1]);
                     
                     if(list.size()>0) {
@@ -109,15 +112,10 @@ public class MainInflowRankingTask {
             if(mainInflowRankingDTOList.size()>0)
             	mainInflowRankingDao.insertMany(mainInflowRankingDTOList);
             if(mainInflowRankingDTOListup.size()>0)
-            	;
+            	mainInflowRankingDao.updateBySymbolAndCreate(mainInflowRankingDTOListup);
 
         }catch (Exception e){
             e.printStackTrace();
         }
-    }
-
-    public static void main(String[] args){
-        MainInflowRankingTask mainInflowRankingTask = new MainInflowRankingTask();
-        mainInflowRankingTask.done();
     }
 }

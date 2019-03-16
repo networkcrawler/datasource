@@ -1,25 +1,29 @@
-package com.data.java.crawler.task;
+package com.data.java.crawler.service.impl;
 
 import java.util.LinkedList;
 import java.util.List;
 
+import com.data.java.crawler.service.CompanyRatingService;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 import com.data.java.crawler.dao.CompanyRatingDao;
 import com.data.java.crawler.dao.impl.CompanyRatingDaoImpl;
 import com.data.java.crawler.dto.CompanyRatingDTO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * 公司评级 信息
  * @author admin
  *
  */
-public class CompanyRatingTask {
+@Service
+public class CompanyRatingServiceImpl implements CompanyRatingService {
 	private String url = "http://stock.eastmoney.com/news/cgspj.html";
-	private CompanyRatingDao companyRatingDao = new CompanyRatingDaoImpl();
+	@Autowired
+	private CompanyRatingDao companyRatingDao;
 	
 	public void done() {
 		//获取文档
@@ -64,7 +68,7 @@ public class CompanyRatingTask {
 	}
 	
 	public static void main(String[] args) {
-		CompanyRatingTask companyRating = new CompanyRatingTask();
+		CompanyRatingServiceImpl companyRating = new CompanyRatingServiceImpl();
 		companyRating.done();
 	}
 }

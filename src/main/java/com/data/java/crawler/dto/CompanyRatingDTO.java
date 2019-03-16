@@ -1,5 +1,8 @@
 package com.data.java.crawler.dto;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import java.util.Date;
 
 /**
@@ -7,14 +10,25 @@ import java.util.Date;
  * @author admin
  *
  */
+@Document(collection = "company_rating")
 public class CompanyRatingDTO {
+	@Id
+	private String id;
 	private String title;//标题
 	private String href;//链接
 	private String info;//提示
 	private String time;//发布时间
 	private Date created;
 	private Date updated;
-	
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
 	public String getTime() {
 		return time;
 	}

@@ -1,10 +1,19 @@
 package com.data.java.crawler.dto;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.Date;
+
 /**
  * 执行抓取 个股研报 的信息
  * @author admin
  *
  */
+@Document(collection = "individual_report")
 public class EastMoneyIndividualReportDTO {
+	@Id
+	private String id;
 	private String companyCode;//公司代码
 	private String sratingName;//评级
 	private String insCode;//机构编码
@@ -17,6 +26,33 @@ public class EastMoneyIndividualReportDTO {
 	private String secuName;//公司名称
 	private String rate;//评级
 	private String secuFullCode;//公司代码
+	private Date created;//创建日期
+	private Date updated;//更新日期
+
+	public Date getCreated() {
+		return created;
+	}
+
+	public void setCreated(Date created) {
+		this.created = created;
+	}
+
+	public Date getUpdated() {
+		return updated;
+	}
+
+	public void setUpdated(Date updated) {
+		this.updated = updated;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
 	public String getCompanyCode() {
 		return companyCode;
 	}

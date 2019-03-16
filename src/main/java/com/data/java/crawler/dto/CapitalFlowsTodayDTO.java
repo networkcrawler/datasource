@@ -1,6 +1,11 @@
 package com.data.java.crawler.dto;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection = "capital_flows_today")
 public class CapitalFlowsTodayDTO {
+	@Id
 	private String id;
 	private String plateSymbol;//行业板块编码
 	private String plateName;//行业板块名称

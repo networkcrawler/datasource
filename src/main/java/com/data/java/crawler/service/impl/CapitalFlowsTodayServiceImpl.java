@@ -1,4 +1,4 @@
-package com.data.java.crawler.task;
+package com.data.java.crawler.service.impl;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.data.java.crawler.service.CapitalFlowsTodayService;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -17,15 +18,19 @@ import com.alibaba.fastjson.JSONObject;
 import com.data.java.crawler.dao.CapitalFlowsTodayDao;
 import com.data.java.crawler.dao.impl.CapitalFlowsTodayDaoImpl;
 import com.data.java.crawler.dto.CapitalFlowsTodayDTO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * 获取 今日行业资金流向
  * @author admin
  *
  */
-public class CapitalFlowsTodayTask {
+@Service
+public class CapitalFlowsTodayServiceImpl implements CapitalFlowsTodayService {
 	private String url = "http://data.eastmoney.com/bkzj/hy.html";
-	private CapitalFlowsTodayDao capitalFlowsTodayDao = new CapitalFlowsTodayDaoImpl();
+	@Autowired
+	private CapitalFlowsTodayDao capitalFlowsTodayDao;
 	
 	public void done() {
 		//获取文档
@@ -100,10 +105,5 @@ public class CapitalFlowsTodayTask {
 		}
 		//将数据写入数据库
 		capitalFlowsTodayDao.insertMany(captitalFlowsTodayDTOs);
-	}
-	
-	public static void main(String[] args) {
-		CapitalFlowsTodayTask c = new CapitalFlowsTodayTask();
-		c.done();
 	}
 }

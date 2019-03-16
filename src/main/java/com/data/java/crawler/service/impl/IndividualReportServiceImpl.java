@@ -1,15 +1,16 @@
-package com.data.java.crawler.task;
+package com.data.java.crawler.service.impl;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.data.java.crawler.service.IndividualReportService;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -18,15 +19,19 @@ import com.alibaba.fastjson.JSONObject;
 import com.data.java.crawler.dao.IndividualReportDao;
 import com.data.java.crawler.dao.impl.IndividualReportDaoImpl;
 import com.data.java.crawler.dto.EastMoneyIndividualReportDTO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * 执行抓取 个股研报 的信息
  * @author admin
  *
  */
-public class IndividualReportTask{
+@Service
+public class IndividualReportServiceImpl implements IndividualReportService {
 	private String url = "http://data.eastmoney.com/report/";
-	private IndividualReportDao individualReportDao = new IndividualReportDaoImpl();
+	@Autowired
+	private IndividualReportDao individualReportDao;
 	
 	public void done() {
 		//获取匹配的字符串
@@ -66,15 +71,18 @@ public class IndividualReportTask{
 			//查询该标题的文章是否存在
 			EastMoneyIndividualReportDTO tmp = individualReportDao.findByTitle(eastMoneyIndividualReportDTO.getTitle());
 			
-			if(tmp==null)
+			if(tmp==null) {
+				eastMoneyIndividualReportDTO.setCreated(new Date());
+				eastMoneyIndividualReportDTO.setUpdated(new Date());
 				list.add(eastMoneyIndividualReportDTO);
+			}
 		}
 		//将数据写入数据库
 		individualReportDao.insertMany(list);
 	}
 	
 	public static void main(String[] args) {
-		IndividualReportTask i = new IndividualReportTask();
+		IndividualReportServiceImpl i = new IndividualReportServiceImpl();
 		i.done();
 	}
 }
