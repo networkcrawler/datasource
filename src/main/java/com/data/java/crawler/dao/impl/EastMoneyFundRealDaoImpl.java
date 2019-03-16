@@ -1,16 +1,8 @@
 package com.data.java.crawler.dao.impl;
 
-import java.util.LinkedList;
 import java.util.List;
-
-import org.bson.Document;
-
 import com.data.java.crawler.dao.EastMoneyFundRealDao;
 import com.data.java.crawler.dto.EastMoneyFundRealPerDTO;
-import com.data.java.crawler.utils.MongoConnectUtils;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Filters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
