@@ -19,6 +19,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.data.java.crawler.dao.IndividualReportDao;
 import com.data.java.crawler.dao.impl.IndividualReportDaoImpl;
 import com.data.java.crawler.dto.EastMoneyIndividualReportDTO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,11 +31,13 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class IndividualReportServiceImpl implements IndividualReportService {
+	private static Logger LOGGER = LoggerFactory.getLogger(IndividualReportServiceImpl.class);
 	private String url = "http://data.eastmoney.com/report/";
 	@Autowired
 	private IndividualReportDao individualReportDao;
 	
 	public void done() {
+		LOGGER.info("开始获取个股研报信息\n\t");
 		//获取匹配的字符串
 		String line = null;
 		BufferedReader bufferedReader = null;
@@ -79,10 +83,8 @@ public class IndividualReportServiceImpl implements IndividualReportService {
 		}
 		//将数据写入数据库
 		individualReportDao.insertMany(list);
+		LOGGER.info("获取个股研报信息结束共"+list.size()+"条数据\n\t");
+
 	}
-	
-	public static void main(String[] args) {
-		IndividualReportServiceImpl i = new IndividualReportServiceImpl();
-		i.done();
-	}
+
 }

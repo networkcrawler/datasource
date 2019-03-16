@@ -11,6 +11,8 @@ import org.jsoup.nodes.Element;
 import com.data.java.crawler.dao.CompanyRatingDao;
 import com.data.java.crawler.dao.impl.CompanyRatingDaoImpl;
 import com.data.java.crawler.dto.CompanyRatingDTO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,11 +23,14 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class CompanyRatingServiceImpl implements CompanyRatingService {
+	private static Logger LOGGER = LoggerFactory.getLogger(CompanyRatingServiceImpl.class);
+
 	private String url = "http://stock.eastmoney.com/news/cgspj.html";
 	@Autowired
 	private CompanyRatingDao companyRatingDao;
 	
 	public void done() {
+		LOGGER.info("开始获取公司评级信息\n\t");
 		//获取文档
 		Document document = null;
 		try {
@@ -64,11 +69,7 @@ public class CompanyRatingServiceImpl implements CompanyRatingService {
 		
 		//将信息写入mongodb
 		companyRatingDao.insertMany(companyRatingDTOs);
-		
-	}
-	
-	public static void main(String[] args) {
-		CompanyRatingServiceImpl companyRating = new CompanyRatingServiceImpl();
-		companyRating.done();
+		LOGGER.info("获取公司评级信息结束,共"+companyRatingDTOs.size()+"条数据\n\t");
+
 	}
 }

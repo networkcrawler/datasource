@@ -12,6 +12,8 @@ import com.data.java.crawler.dao.EastMoneyFundRealDao;
 import com.data.java.crawler.dao.impl.EastMoneyFundRealDaoImpl;
 import com.data.java.crawler.dto.EastMoneyFundRealDTO;
 import com.data.java.crawler.dto.EastMoneyFundRealPerDTO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,11 +24,14 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class EastMoneyFundRealServiceImpl implements EastMoneyFundRealService {
-	private String url = "http://nufm.dfcfw.com/EM_Finance2014NumericApplication/JS.aspx?type=ct&st=(BalFlowMain)&sr=-1&p=1&ps=50&js=var%20ectQJNnj={pages:(pc),date:%222014-10-22%22,data:[(x)]}&token=894050c76af8597a853f5b408b759f5d&cmd=C._AB&sty=DCFFITA&rt=51742742";
+	private static Logger LOGGER = LoggerFactory.getLogger(EastMoneyFundRealServiceImpl.class);
+
+	private String url = "http://nufm.dfcfw.com/EM_Finance2014NumericApplication/JS.aspx?type=ct&st=(BalFlowMain)&sr=-1&p=1&ps=100&js=var%20ectQJNnj={pages:(pc),date:%222014-10-22%22,data:[(x)]}&token=894050c76af8597a853f5b408b759f5d&cmd=C._AB&sty=DCFFITA&rt=51742742";
 	@Autowired
 	private EastMoneyFundRealDao eastMoneyFundRealDao;
 	
 	public void done() {
+		LOGGER.info("开始获取实时资金流向前100股\n\t");
 		Response resp = null;
 		//发送请求
 		try {
@@ -73,7 +78,8 @@ public class EastMoneyFundRealServiceImpl implements EastMoneyFundRealService {
 			
 			if(eastPersUp.size()!=0)
 				eastMoneyFundRealDao.update(eastPersUp);
-			
+			LOGGER.info("获取实时资金流向前100股共"+eastPersIn.size()+"条新数据\n\t");
+
 		}catch(Exception e) {
 			e.printStackTrace();
 		}

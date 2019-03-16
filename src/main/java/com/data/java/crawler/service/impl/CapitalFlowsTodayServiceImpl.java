@@ -18,6 +18,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.data.java.crawler.dao.CapitalFlowsTodayDao;
 import com.data.java.crawler.dao.impl.CapitalFlowsTodayDaoImpl;
 import com.data.java.crawler.dto.CapitalFlowsTodayDTO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,11 +30,13 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class CapitalFlowsTodayServiceImpl implements CapitalFlowsTodayService {
+	private static Logger LOGGER = LoggerFactory.getLogger(CapitalFlowsTodayServiceImpl.class);
 	private String url = "http://data.eastmoney.com/bkzj/hy.html";
 	@Autowired
 	private CapitalFlowsTodayDao capitalFlowsTodayDao;
 	
 	public void done() {
+		LOGGER.info("开始获取今日行业资金流向\n\t");
 		//获取文档
 		Document document = null;
 		try {
@@ -105,5 +109,6 @@ public class CapitalFlowsTodayServiceImpl implements CapitalFlowsTodayService {
 		}
 		//将数据写入数据库
 		capitalFlowsTodayDao.insertMany(captitalFlowsTodayDTOs);
+		LOGGER.info("获取今日行业资金流向结束共"+captitalFlowsTodayDTOs.size()+"条数据\n\t");
 	}
 }

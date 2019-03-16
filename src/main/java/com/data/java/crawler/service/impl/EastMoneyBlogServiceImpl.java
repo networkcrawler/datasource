@@ -7,6 +7,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
@@ -18,9 +20,12 @@ import java.util.List;
  */
 @Service
 public class EastMoneyBlogServiceImpl implements EastMoneyBlogService {
+    private static Logger LOGGER = LoggerFactory.getLogger(EastMoneyBlogServiceImpl.class);
+
     private String url = "http://blog.eastmoney.com/hot_1.html";//连接地址
 
     public void done(){
+        LOGGER.info("开始获取东方财富的热门博主文章\n\t");
         //调接口
         Document document = null;
         try {
@@ -73,5 +78,6 @@ public class EastMoneyBlogServiceImpl implements EastMoneyBlogService {
         content = "<div>"+content+"</div>";
         String subject = "热门博主文章20条";
         SendMailUtils.send(subject,content);
+        LOGGER.info("获取东方财富的热门博主文章结束\n\t");
     }
 }

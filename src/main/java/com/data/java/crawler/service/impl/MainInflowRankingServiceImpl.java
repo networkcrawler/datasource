@@ -10,6 +10,8 @@ import com.data.java.crawler.service.MainInflowRankingService;
 import com.data.java.crawler.utils.DateFormatUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,12 +29,14 @@ import java.util.regex.Pattern;
  */
 @Service
 public class MainInflowRankingServiceImpl implements MainInflowRankingService {
+    private static Logger LOGGER = LoggerFactory.getLogger(MainInflowRankingServiceImpl.class);
 
     private String url = "http://data.eastmoney.com/zjlx/list.html";
     @Autowired
     private MainInflowRankingDao mainInflowRankingDao;
 
     public void done(){
+        LOGGER.info("开始获取主力净流入排名\n\t");
         Document document = null;
         try {
             //获取文档内容
@@ -113,6 +117,7 @@ public class MainInflowRankingServiceImpl implements MainInflowRankingService {
             	mainInflowRankingDao.insertMany(mainInflowRankingDTOList);
             if(mainInflowRankingDTOListup.size()>0)
             	mainInflowRankingDao.updateBySymbolAndCreate(mainInflowRankingDTOListup);
+            LOGGER.info("获取主力净流入排名结束共"+mainInflowRankingDTOList.size()+"条数据\n\t");
 
         }catch (Exception e){
             e.printStackTrace();
