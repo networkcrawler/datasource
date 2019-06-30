@@ -22,15 +22,18 @@ public class SchedulerJob extends QuartzJobBean {
     private IndividualReportService individualReportService;
     @Autowired
     private MainInflowRankingService mainInflowRankingService;
+    @Autowired
+    private StockPoolService stockPoolService;
 
     @Override
     protected void executeInternal(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         try{
-            capitalFlowsTodayService.done();
-            companyRatingService.done();
-            eastMoneyFundRealService.done();
-            individualReportService.done();
-            mainInflowRankingService.done();
+            //capitalFlowsTodayService.done();
+            //companyRatingService.done();
+            //eastMoneyFundRealService.done();
+            //individualReportService.done();
+            //mainInflowRankingService.done();
+            stockPoolService.getStockPoolFromSina();
         }catch (Exception e){
             e.printStackTrace();
         }
